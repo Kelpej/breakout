@@ -4,8 +4,7 @@ import acm.graphics.GRectangle;
 import java.awt.*;
 
 public class Ball extends Breakout{
-    public double x;
-    public double y;
+    public double x, y;
     public double radius;
     public double vx, vy;
     public Color color;
@@ -32,6 +31,18 @@ public class Ball extends Breakout{
     public void checkBoardCollision(){
         if (this.x > Breakout.APPLICATION_WIDTH - this.radius || this.x < this.radius || this.y > Breakout.APPLICATION_HEIGHT - this.radius){
             this.vx = -this.vx;
+        }
+    }
+    public void checkPaddleCollision(GRectangle paddle){
+        if (this.b.getBounds().intersects(paddle)) {
+            this.vx = -this.vx;
+            this.vy = -this.vy;
+        }
+    }
+    public void checkCeilingCollision(){
+        if (this.y <= this.radius) {
+            this.vx = -this.vx;
+            this.vy = -this.vy;
         }
     }
     public GRectangle getCollisionElement(GRectangle i){

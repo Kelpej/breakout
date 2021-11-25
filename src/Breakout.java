@@ -7,15 +7,12 @@
  * This file will eventually implement the game of Breakout.
  */
 
-import acm.graphics.*;
 import acm.program.*;
 import acm.util.RandomGenerator;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
-public class Breakout extends GraphicsProgram implements KeyListener {
+public class Breakout extends GraphicsProgram {
     public Breakout(){
         this.addKeyListener(this);
     }
@@ -34,20 +31,20 @@ public class Breakout extends GraphicsProgram implements KeyListener {
     private static final int PADDLE_HEIGHT = 10;
 
     /** Offset of the paddle up from the bottom */
-    private static final int PADDLE_Y_OFFSET = 30;
+    private static final int PADDLE_OFFSET = 30;
 
     /** Number of bricks per row */
-    private static final int NBRICKS_PER_ROW = 10;
+    private static final int BRICKS_PER_ROW = 10;
 
     /** Number of rows of bricks */
-    private static final int NBRICK_ROWS = 10;
+    private static final int BRICK_ROWS = 10;
 
     /** Separation between bricks */
     private static final int BRICK_SEP = 4;
 
     /** Width of a brick */
     private static final int BRICK_WIDTH =
-            (WIDTH - (NBRICKS_PER_ROW - 1) * BRICK_SEP) / NBRICKS_PER_ROW;
+            (WIDTH - (BRICKS_PER_ROW - 1) * BRICK_SEP) / BRICKS_PER_ROW;
 
     /** Height of a brick */
     private static final int BRICK_HEIGHT = 8;
@@ -56,23 +53,8 @@ public class Breakout extends GraphicsProgram implements KeyListener {
     private static final int BALL_RADIUS = 10;
 
     /** Offset of the top brick row from the top */
-    private static final int BRICK_Y_OFFSET = 70;
-
-    /** Number of turns */
-    private static final int NTURNS = 3;
-
-    @Override
-    public void keyTyped(KeyEvent e){
-
-    }
-    @Override
-    public void keyPressed(KeyEvent e){
-
-    }
-    @Override
-    public void keyReleased(KeyEvent e){
-        System.out.println("You released: " + e.getKeyChar());
-    }
+    private static final int BRICK_OFFSET = 70;
+    
     /* Method: run() */
     /** Runs the Breakout program. */
 
@@ -82,29 +64,31 @@ public class Breakout extends GraphicsProgram implements KeyListener {
         Brick.setWidth(BRICK_WIDTH);
         Brick.setHeight(BRICK_HEIGHT);
 
-        double vx = rgen.nextDouble(1.0, 3.0);
+        double vx = 0;
+        //double vx = rgen.nextDouble(1.0, 3.0);
         if (rgen.nextBoolean(0.5)) vx = -vx;
         double vy = rgen.nextDouble(1.0, 3.0);
         Ball ball = new Ball(200, 300, BALL_RADIUS, vx, vy, Color.RED);
 
-        Paddle paddle = new Paddle((WIDTH-PADDLE_WIDTH)/2, HEIGHT-PADDLE_HEIGHT, PADDLE_WIDTH, PADDLE_HEIGHT, Color.BLUE);
+        Paddle paddle = new Paddle((WIDTH-PADDLE_WIDTH)/2, HEIGHT-PADDLE_HEIGHT- PADDLE_OFFSET, PADDLE_WIDTH, PADDLE_HEIGHT, Color.BLUE);
         //create bricks
-        int x = 0;
-        int y = 0;
         Color color;
-        for (int j = 0; j < NBRICK_ROWS; j++) {
+        for (int j = 0; j < BRICK_ROWS; j++) {
             color = rgen.nextColor();
-            for (int i = 0; i < NBRICKS_PER_ROW; i++) {
-                Brick kirpich = new Brick(x + (BRICK_WIDTH + BRICK_SEP) * i, y + (Brick.getBrickHeight() + BRICK_SEP) * j, Brick.getBrickWidth(), Brick.getBrickHeight(), color, false);
-                add(kirpich.createBrick(kirpich.x, kirpich.y, Brick.getBrickWidth(), Brick.getBrickHeight(), kirpich.getColor()));
+            for (int i = 0; i < BRICKS_PER_ROW; i++) {
+                Brick brick = new Brick((BRICK_WIDTH + BRICK_SEP) * i, BRICK_OFFSET + (Brick.getBrickHeight() + BRICK_SEP) * j, Brick.getBrickWidth(), Brick.getBrickHeight(), color, false);
+                add(brick.createBrick(brick.x, brick.y, Brick.getBrickWidth(), Brick.getBrickHeight(), brick.getColor()));
             }
         }
         add(paddle.paddle);
         while(true){
-            ball.move(vx, vy);
-            ball.checkBoardCollision();
             ball.drawBall();
             add(ball.b);
+            ball.checkPaddleCollision(paddle.sq);
+            ball.checkBoardCollision();
+            ball.checkCeilingCollision();
+            ball.move(vx, vy);
+            if (ball.y >= HEIGHT-paddle.height) break;
             pause(20);
             ball.b.setVisible(false);
         }
