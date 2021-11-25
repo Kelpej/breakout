@@ -12,8 +12,13 @@ import acm.program.*;
 import acm.util.RandomGenerator;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-public class Breakout extends GraphicsProgram {
+public class Breakout extends GraphicsProgram implements KeyListener {
+    public Breakout(){
+        this.addKeyListener(this);
+    }
     private RandomGenerator rgen = RandomGenerator.getInstance();
 
     /** Width and height of application window in pixels */
@@ -56,11 +61,24 @@ public class Breakout extends GraphicsProgram {
     /** Number of turns */
     private static final int NTURNS = 3;
 
+    @Override
+    public void keyTyped(KeyEvent e){
 
+    }
+    @Override
+    public void keyPressed(KeyEvent e){
+
+    }
+    @Override
+    public void keyReleased(KeyEvent e){
+        System.out.println("You released: " + e.getKeyChar());
+    }
     /* Method: run() */
     /** Runs the Breakout program. */
+
     public void run() {
         /* Initializing */
+        Breakout board = new Breakout();
         Brick.setWidth(BRICK_WIDTH);
         Brick.setHeight(BRICK_HEIGHT);
 
@@ -68,14 +86,9 @@ public class Breakout extends GraphicsProgram {
         if (rgen.nextBoolean(0.5)) vx = -vx;
         double vy = rgen.nextDouble(1.0, 3.0);
         Ball ball = new Ball(200, 300, BALL_RADIUS, vx, vy, Color.RED);
-        ball.drawBall();
-        add(ball.b);
-
-        GRectangle sq = new GRectangle(200, 300, 11, 10);
-        System.out.println(ball.getCollisionElement(sq));
 
         Paddle paddle = new Paddle((WIDTH-PADDLE_WIDTH)/2, HEIGHT-PADDLE_HEIGHT, PADDLE_WIDTH, PADDLE_HEIGHT, Color.BLUE);
-
+        //create bricks
         int x = 0;
         int y = 0;
         Color color;
@@ -87,6 +100,14 @@ public class Breakout extends GraphicsProgram {
             }
         }
         add(paddle.paddle);
+        while(true){
+            ball.move(vx, vy);
+            ball.checkBoardCollision();
+            ball.drawBall();
+            add(ball.b);
+            pause(20);
+            ball.b.setVisible(false);
+        }
     }
 
 }

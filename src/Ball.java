@@ -25,6 +25,15 @@ public class Ball extends Breakout{
         b.setFillColor(this.color);
         this.b = b;
     }
+    public void move(double vx, double vy){
+        this.x = this.x + this.vx;
+        this.y = this.y + this.vy;
+    }
+    public void checkBoardCollision(){
+        if (this.x > Breakout.APPLICATION_WIDTH - this.radius || this.x < this.radius || this.y > Breakout.APPLICATION_HEIGHT - this.radius){
+            this.vx = -this.vx;
+        }
+    }
     public GRectangle getCollisionElement(GRectangle i){
         if (this.b.getBounds().intersects(i)) {
             return i;
