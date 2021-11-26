@@ -8,7 +8,6 @@ public class Brick{
     int x, y;
     Color color;
     boolean broken;
-    GRectangle rect;
 
     public Brick(int x, int y, int width, int height, Color color, boolean broken) {
         this.x = x;
@@ -17,7 +16,6 @@ public class Brick{
         this.height = height;
         this.color = color;
         this.broken = broken;
-        this.rect = new GRectangle(x, y, width, height);
     }
 
     public GRect createBrick(int x, int y, int width, int height, Color color){

@@ -7,9 +7,7 @@
  * This file will eventually implement the game of Breakout.
  */
 
-import acm.graphics.GOval;
-import acm.graphics.GRect;
-import acm.graphics.GRectangle;
+import acm.graphics.GObject;
 import acm.program.*;
 import acm.util.RandomGenerator;
 
@@ -60,28 +58,16 @@ public class Breakout extends GraphicsProgram {
 
     public void mouseMoved(MouseEvent e) {
         if ((e.getX() < WIDTH - PADDLE_WIDTH/2) && (e.getX() > PADDLE_WIDTH/2)) {
-            paddle.x = e.getX()-PADDLE_WIDTH/2;
+            paddle.p.setLocation(e.getX()-PADDLE_WIDTH/2, paddle.y);
         }
-    }
-    private void drawPaddle(){
-        paddle.paddle.setVisible(false);
-        paddle.paddle = new GRect(paddle.x, paddle.y, paddle.width, paddle.height);
-        paddle.sq = new GRectangle(paddle.x, paddle.y, paddle.width, paddle.height);
-        paddle.paddle.setFilled(true);
-        paddle.paddle.setFillColor(paddle.color);
-        add(paddle.paddle);
-        addMouseListeners();
     }
 
     Ball ball = new Ball(200, 300, BALL_RADIUS, 0, 4, Color.RED);
 
-    private void drawBall(){
-        GOval b = new GOval(ball.x, ball.y, ball.radius, ball.radius);
-        b.setFilled(true);
-        b.setFillColor(ball.color);
-        ball.b = b;
-        ball.sq = new GRectangle(ball.x, ball.y, ball.radius, ball.radius);
-        add(ball.b);
+    public void moveBall(Ball ball){
+        ball.b.move(ball.vx, ball.vy);
+        ball.x = ball.b.getX();
+        ball.y = ball.b.getY();
     }
 
     private void drawBricks(){
@@ -94,29 +80,40 @@ public class Breakout extends GraphicsProgram {
             }
         }
     }
+    private void getCollision(Ball ball) {
+        GObject collider = getElementAt(ball.x, ball.y);
+        if (ball.x > Breakout.APPLICATION_WIDTH - ball.radius || ball.x < ball.radius || ball.y > Breakout.APPLICATION_HEIGHT - ball.radius){
+            ball.vx = -ball.vx;
+        } else if (ball.y <= 0) {
+            ball.vy = -ball.vy;
+        }else if (collider == paddle.p) {
+            ball.vx = rgen.nextDouble(1.0 ,3.0);
+            if (rgen.nextBoolean(0.5)) ball.vx = -ball.vx;
+            ball.vy = -ball.vy;
+        } else if (collider != null){
+            remove(collider);
+            ball.vy = -ball.vy;
+        }
+    }
     public void init(){
         Brick.setWidth(BRICK_WIDTH);
         Brick.setHeight(BRICK_HEIGHT);
         drawBricks();
+        add(paddle.p);
+        add(ball.b);
     }
     /* Method: run() */
     /** Runs the Breakout program. */
 
     public void run() {
         /* Initializing */
-
         //create bricks
-        add(paddle.paddle);
+        addMouseListeners();
         while(true){
-            drawPaddle();
-            drawBall();
-            ball.checkPaddleCollision(paddle.sq);
-            ball.checkBoardCollision();
-            ball.checkCeilingCollision();
-            ball.move(ball.vx, ball.vy);
-            if (ball.y >= HEIGHT-paddle.height) break;
+            moveBall(ball);
+            getCollision(ball);
+            if (ball.y >= HEIGHT-PADDLE_OFFSET) break;
             pause(10);
-            ball.b.setVisible(false);
         }
     }
 
