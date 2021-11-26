@@ -1,5 +1,6 @@
 import acm.graphics.GOval;
 import acm.graphics.GRectangle;
+import acm.util.RandomGenerator;
 
 import java.awt.*;
 
@@ -9,6 +10,8 @@ public class Ball{
     public double vx, vy;
     public Color color;
     public GOval b;
+
+    RandomGenerator rgen = RandomGenerator.getInstance();
 
     public Ball(int x, int y, int radius, double vx, double vy, Color color){
         this.x = x;
@@ -35,13 +38,13 @@ public class Ball{
     }
     public void checkPaddleCollision(GRectangle paddle){
         if (this.b.getBounds().intersects(paddle)) {
+            this.vx = rgen.nextDouble(1.0 ,3.0);
             this.vx = -this.vx;
             this.vy = -this.vy;
         }
     }
     public void checkCeilingCollision(){
         if (this.y <= this.radius) {
-            this.vx = -this.vx;
             this.vy = -this.vy;
         }
     }

@@ -7,10 +7,13 @@
  * This file will eventually implement the game of Breakout.
  */
 
+import acm.graphics.GRect;
+import acm.graphics.GRectangle;
 import acm.program.*;
 import acm.util.RandomGenerator;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
 
 public class Breakout extends GraphicsProgram {
     public Breakout(){
@@ -54,7 +57,23 @@ public class Breakout extends GraphicsProgram {
 
     /** Offset of the top brick row from the top */
     private static final int BRICK_OFFSET = 70;
-    
+
+    Paddle paddle = new Paddle((WIDTH-PADDLE_WIDTH)/2, HEIGHT-PADDLE_HEIGHT- PADDLE_OFFSET, PADDLE_WIDTH, PADDLE_HEIGHT, Color.BLUE);
+
+    public void mouseMoved(MouseEvent e) {
+        if ((e.getX() < WIDTH - PADDLE_WIDTH/2) && (e.getX() > PADDLE_WIDTH/2)) {
+            paddle.x = e.getX()-PADDLE_WIDTH/2;
+        }
+    }
+    private void drawPaddle(){
+        paddle.paddle.setVisible(false);
+        paddle.paddle = new GRect(paddle.x, paddle.y, paddle.width, paddle.height);
+        paddle.sq = new GRectangle(paddle.x, paddle.y, paddle.width, paddle.height);
+        paddle.paddle.setFilled(true);
+        paddle.paddle.setFillColor(paddle.color);
+        add(paddle.paddle);
+        addMouseListeners();
+    }
     /* Method: run() */
     /** Runs the Breakout program. */
 
@@ -64,13 +83,12 @@ public class Breakout extends GraphicsProgram {
         Brick.setWidth(BRICK_WIDTH);
         Brick.setHeight(BRICK_HEIGHT);
 
-        double vx = 0;
-        //double vx = rgen.nextDouble(1.0, 3.0);
+        double vx = rgen.nextDouble(1.0, 3.0);
         if (rgen.nextBoolean(0.5)) vx = -vx;
-        double vy = rgen.nextDouble(1.0, 3.0);
+        double vy = rgen.nextDouble(3.0, 6.0);
+
         Ball ball = new Ball(200, 300, BALL_RADIUS, vx, vy, Color.RED);
 
-        Paddle paddle = new Paddle((WIDTH-PADDLE_WIDTH)/2, HEIGHT-PADDLE_HEIGHT- PADDLE_OFFSET, PADDLE_WIDTH, PADDLE_HEIGHT, Color.BLUE);
         //create bricks
         Color color;
         for (int j = 0; j < BRICK_ROWS; j++) {
@@ -82,6 +100,7 @@ public class Breakout extends GraphicsProgram {
         }
         add(paddle.paddle);
         while(true){
+            drawPaddle();
             ball.drawBall();
             add(ball.b);
             ball.checkPaddleCollision(paddle.sq);
