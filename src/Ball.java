@@ -1,3 +1,4 @@
+import acm.graphics.GObject;
 import acm.graphics.GOval;
 import acm.graphics.GRectangle;
 import acm.util.RandomGenerator;
@@ -23,9 +24,5 @@ public class Ball{
         this.b = new GOval(this.x, this.y, this.radius, this.radius);
         this.b.setFilled(true);
         this.b.setFillColor(Color.RED);
-    }
-
-    private void drawBall(){
-
     }
 }

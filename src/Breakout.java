@@ -15,6 +15,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 
 public class Breakout extends GraphicsProgram {
+
     private RandomGenerator rgen = RandomGenerator.getInstance();
 
     /** Width and height of application window in pixels */
@@ -70,18 +71,20 @@ public class Breakout extends GraphicsProgram {
         ball.y = ball.b.getY();
     }
 
-    private void drawBricks(){
-        Color color;
-        for (int j = 0; j < BRICK_ROWS; j++) {
-            color = rgen.nextColor();
-            for (int i = 0; i < BRICKS_PER_ROW; i++) {
-                Brick brick = new Brick((BRICK_WIDTH + BRICK_SEP) * i, BRICK_OFFSET + (Brick.getBrickHeight() + BRICK_SEP) * j, Brick.getBrickWidth(), Brick.getBrickHeight(), color, false);
-                add(brick.createBrick(brick.x, brick.y, Brick.getBrickWidth(), Brick.getBrickHeight(), brick.getColor()));
-            }
+    private GObject getElementAtBall(Ball ball){
+        if (getElementAt(ball.x, ball.y) != null){
+            return getElementAt(ball.x, ball.y);
+        } else if (getElementAt(ball.x+ball.radius, ball.y) != null){
+            return getElementAt(ball.x+ball.radius, ball.y);
+        } else if (getElementAt(ball.x, ball.y+ball.radius) != null){
+            return getElementAt(ball.x, ball.y+ball.radius);
+        } else if (getElementAt(ball.x+ball.radius, ball.y+ball.radius) != null){
+            return getElementAt(ball.x+ball.radius, ball.y+ball.radius);
         }
+        return null;
     }
     private void getCollision(Ball ball) {
-        GObject collider = getElementAt(ball.x, ball.y);
+        GObject collider = getElementAtBall(ball);
         if (ball.x > Breakout.APPLICATION_WIDTH - ball.radius || ball.x < ball.radius || ball.y > Breakout.APPLICATION_HEIGHT - ball.radius){
             ball.vx = -ball.vx;
         } else if (ball.y <= 0) {
@@ -95,6 +98,18 @@ public class Breakout extends GraphicsProgram {
             ball.vy = -ball.vy;
         }
     }
+
+    private void drawBricks(){
+        Color color;
+        for (int j = 0; j < BRICK_ROWS; j++) {
+            color = rgen.nextColor();
+            for (int i = 0; i < BRICKS_PER_ROW; i++) {
+                Brick brick = new Brick((BRICK_WIDTH + BRICK_SEP) * i, BRICK_OFFSET + (Brick.getBrickHeight() + BRICK_SEP) * j, Brick.getBrickWidth(), Brick.getBrickHeight(), color, false);
+                add(brick.createBrick(brick.x, brick.y, Brick.getBrickWidth(), Brick.getBrickHeight(), brick.getColor()));
+            }
+        }
+    }
+
     public void init(){
         Brick.setWidth(BRICK_WIDTH);
         Brick.setHeight(BRICK_HEIGHT);
@@ -104,7 +119,6 @@ public class Breakout extends GraphicsProgram {
     }
     /* Method: run() */
     /** Runs the Breakout program. */
-
     public void run() {
         /* Initializing */
         //create bricks
@@ -116,5 +130,4 @@ public class Breakout extends GraphicsProgram {
             pause(10);
         }
     }
-
 }
