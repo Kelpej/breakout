@@ -7,6 +7,7 @@
  * This file will eventually implement the game of Breakout.
  */
 
+import acm.graphics.GOval;
 import acm.graphics.GRect;
 import acm.graphics.GRectangle;
 import acm.program.*;
@@ -74,6 +75,17 @@ public class Breakout extends GraphicsProgram {
         add(paddle.paddle);
         addMouseListeners();
     }
+
+    Ball ball = new Ball(200, 300, BALL_RADIUS, 0, 3, Color.RED);
+
+    public void drawBall(){
+        GOval b = new GOval(ball.x, ball.y, ball.radius, ball.radius);
+        b.setFilled(true);
+        b.setFillColor(ball.color);
+        ball.b = b;
+        ball.sq = new GRectangle(ball.x, ball.y, ball.radius, ball.radius);
+        add(ball.b);
+    }
     /* Method: run() */
     /** Runs the Breakout program. */
 
@@ -82,12 +94,6 @@ public class Breakout extends GraphicsProgram {
         Breakout board = new Breakout();
         Brick.setWidth(BRICK_WIDTH);
         Brick.setHeight(BRICK_HEIGHT);
-
-        double vx = rgen.nextDouble(1.0, 3.0);
-        if (rgen.nextBoolean(0.5)) vx = -vx;
-        double vy = rgen.nextDouble(3.0, 6.0);
-
-        Ball ball = new Ball(200, 300, BALL_RADIUS, vx, vy, Color.RED);
 
         //create bricks
         Color color;
@@ -101,14 +107,13 @@ public class Breakout extends GraphicsProgram {
         add(paddle.paddle);
         while(true){
             drawPaddle();
-            ball.drawBall();
-            add(ball.b);
+            drawBall();
             ball.checkPaddleCollision(paddle.sq);
             ball.checkBoardCollision();
             ball.checkCeilingCollision();
-            ball.move(vx, vy);
+            ball.move(ball.vx, ball.vy);
             if (ball.y >= HEIGHT-paddle.height) break;
-            pause(20);
+            pause(10);
             ball.b.setVisible(false);
         }
     }

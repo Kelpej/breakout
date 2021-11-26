@@ -10,6 +10,7 @@ public class Ball{
     public double vx, vy;
     public Color color;
     public GOval b;
+    public GRectangle sq;
 
     RandomGenerator rgen = RandomGenerator.getInstance();
 
@@ -17,9 +18,11 @@ public class Ball{
         this.x = x;
         this.y = y;
         this.radius = radius;
+        this.b = new GOval(this.x, this.y, this.radius, this.radius);
         this.vx = vx;
         this.vy = vy;
         this.color = color;
+        this.sq = new GRectangle(this.x, this.y, this.radius, this.radius);
     }
     public void drawBall(){
         GOval b = new GOval(this.x, this.y, this.radius, this.radius);
@@ -37,9 +40,9 @@ public class Ball{
         }
     }
     public void checkPaddleCollision(GRectangle paddle){
-        if (this.b.getBounds().intersects(paddle)) {
+        if (this.sq.intersects(paddle)) {
             this.vx = rgen.nextDouble(1.0 ,3.0);
-            this.vx = -this.vx;
+            if (rgen.nextBoolean(0.5)) vx = -vx;
             this.vy = -this.vy;
         }
     }
