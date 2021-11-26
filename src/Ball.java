@@ -24,12 +24,6 @@ public class Ball{
         this.color = color;
         this.sq = new GRectangle(this.x, this.y, this.radius, this.radius);
     }
-    public void drawBall(){
-        GOval b = new GOval(this.x, this.y, this.radius, this.radius);
-        b.setFilled(true);
-        b.setFillColor(this.color);
-        this.b = b;
-    }
     public void move(double vx, double vy){
         this.x = this.x + this.vx;
         this.y = this.y + this.vy;

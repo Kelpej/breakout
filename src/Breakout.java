@@ -17,9 +17,6 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 
 public class Breakout extends GraphicsProgram {
-    public Breakout(){
-        this.addKeyListener(this);
-    }
     private RandomGenerator rgen = RandomGenerator.getInstance();
 
     /** Width and height of application window in pixels */
@@ -59,7 +56,7 @@ public class Breakout extends GraphicsProgram {
     /** Offset of the top brick row from the top */
     private static final int BRICK_OFFSET = 70;
 
-    Paddle paddle = new Paddle((WIDTH-PADDLE_WIDTH)/2, HEIGHT-PADDLE_HEIGHT- PADDLE_OFFSET, PADDLE_WIDTH, PADDLE_HEIGHT, Color.BLUE);
+    Paddle paddle = new Paddle((WIDTH-PADDLE_WIDTH)/2, HEIGHT-PADDLE_HEIGHT- PADDLE_OFFSET, PADDLE_WIDTH, PADDLE_HEIGHT, Color.DARK_GRAY);
 
     public void mouseMoved(MouseEvent e) {
         if ((e.getX() < WIDTH - PADDLE_WIDTH/2) && (e.getX() > PADDLE_WIDTH/2)) {
@@ -76,9 +73,9 @@ public class Breakout extends GraphicsProgram {
         addMouseListeners();
     }
 
-    Ball ball = new Ball(200, 300, BALL_RADIUS, 0, 3, Color.RED);
+    Ball ball = new Ball(200, 300, BALL_RADIUS, 0, 4, Color.RED);
 
-    public void drawBall(){
+    private void drawBall(){
         GOval b = new GOval(ball.x, ball.y, ball.radius, ball.radius);
         b.setFilled(true);
         b.setFillColor(ball.color);
@@ -86,16 +83,8 @@ public class Breakout extends GraphicsProgram {
         ball.sq = new GRectangle(ball.x, ball.y, ball.radius, ball.radius);
         add(ball.b);
     }
-    /* Method: run() */
-    /** Runs the Breakout program. */
 
-    public void run() {
-        /* Initializing */
-        Breakout board = new Breakout();
-        Brick.setWidth(BRICK_WIDTH);
-        Brick.setHeight(BRICK_HEIGHT);
-
-        //create bricks
+    private void drawBricks(){
         Color color;
         for (int j = 0; j < BRICK_ROWS; j++) {
             color = rgen.nextColor();
@@ -104,6 +93,19 @@ public class Breakout extends GraphicsProgram {
                 add(brick.createBrick(brick.x, brick.y, Brick.getBrickWidth(), Brick.getBrickHeight(), brick.getColor()));
             }
         }
+    }
+    public void init(){
+        Brick.setWidth(BRICK_WIDTH);
+        Brick.setHeight(BRICK_HEIGHT);
+        drawBricks();
+    }
+    /* Method: run() */
+    /** Runs the Breakout program. */
+
+    public void run() {
+        /* Initializing */
+
+        //create bricks
         add(paddle.paddle);
         while(true){
             drawPaddle();

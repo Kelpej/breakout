@@ -2,7 +2,6 @@ import acm.graphics.GRect;
 import acm.graphics.GRectangle;
 
 import java.awt.*;
-import java.awt.event.*;
 
 public class Paddle{
     public double x, y;
