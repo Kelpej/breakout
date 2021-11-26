@@ -3,7 +3,7 @@ import acm.graphics.GRectangle;
 
 import java.awt.*;
 
-public class Brick extends Breakout{
+public class Brick{
     private static int width, height;
     int x, y;
     Color color;

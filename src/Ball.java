@@ -3,7 +3,7 @@ import acm.graphics.GRectangle;
 
 import java.awt.*;
 
-public class Ball extends Breakout{
+public class Ball{
     public double x, y;
     public double radius;
     public double vx, vy;
